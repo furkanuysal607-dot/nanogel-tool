@@ -5,6 +5,12 @@ st.set_page_config(layout="wide")
 
 st.title("Nanogel Clinical Decision System")
 
+st.markdown("""
+---
+**Clinical Mode: Active** | **Research Mode: Enabled** | **Nanogel v1.0**
+---
+""")
+
 col1, col2 = st.columns([1, 2])
 
 with col1:
@@ -24,16 +30,18 @@ with col2:
         E = 1 + (stenosis / 2)
         score = (phi * 0.7) + (E * 0.3)
 
-        # clinical output
+        # alerts
         st.subheader("Clinical Metrics")
-        st.metric("Nanogel Concentration (φ)", round(phi, 3))
-        st.metric("Tissue Stiffness (E)", round(E, 2))
-        st.metric("Risk Score", round(score, 3))
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Nanogel φ", round(phi, 3))
+        c2.metric("Stiffness E", round(E, 2))
+        c3.metric("Risk Score", round(score, 3))
 
         if phi > 0.5:
-            st.error("HIGH CLOGGING RISK")
+            st.error("⚠ High clogging risk detected. Adjust nanogel concentration.")
         else:
-            st.success("LOW CLOGGING RISK")
+            st.success("Safe range. Stable flow predicted.")
 
         # research visual (ISEF part)
         st.subheader("Dose-Response Curve")
