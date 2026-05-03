@@ -8,6 +8,8 @@ st.title("Nanogel Clinical Decision System")
 st.caption("Doctor input → nanogel treatment prediction")
 
 # LOAD MODEL (NOW LOCAL FILE)
+import os
+st.write("Files in folder:", os.listdir())
 model = pickle.load(open("model.pkl", "rb"))
 
 col1, col2 = st.columns(2)
