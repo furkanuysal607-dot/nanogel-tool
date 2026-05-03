@@ -2,42 +2,21 @@ import streamlit as st
 import pickle
 import numpy as np
 
-st.set_page_config(page_title="Nanogel Clinical Tool", layout="wide")
+st.title("Nanogel Clinical Tool")
 
-st.title("Nanogel Clinical Decision System")
-st.caption("Doctor input → nanogel treatment prediction")
+# load model directly
+model = pickle.load(open("model.pkl", "rb"))
 
-# LOAD MODEL (NOW LOCAL FILE)
-import os
-st.write("Files in folder:", os.listdir())
-import joblib
-model = joblib.load("model.pkl")
+st.header("Patient Input")
 
-col1, col2 = st.columns(2)
+stenosis = st.slider("Stenosis (%)", 10, 80, 50)
 
-with col1:
-    st.header("Patient Input")
+if st.button("Run"):
+    phi = 0.02 + (stenosis / 100) * 0.6
+    E = 1 + (stenosis / 2)
 
-    patient_id = st.text_input("Patient ID")
-    stenosis = st.slider("Arterial Stenosis (%)", 10, 80, 50)
+    result = model.predict([[phi, E, stenosis]])[0]
 
-    run = st.button("Generate Plan")
-
-with col2:
-    st.header("Results")
-
-    if run:
-        phi = 0.02 + (stenosis / 100) * 0.6
-        E = 1 + (stenosis / 2)
-
-        output = model.predict([[phi, E, stenosis]])[0]
-
-        st.subheader("Recommended Parameters")
-        st.write("Concentration (φ):", round(phi, 3))
-        st.write("Stiffness (E):", round(E, 2))
-        st.write("Model Output:", output)
-
-        if phi > 0.5:
-            st.error("High clogging risk")
-        else:
-            st.success("Low clogging risk")
+    st.write("Concentration (φ):", phi)
+    st.write("Stiffness (E):", E)
+    st.write("Output:", result)
