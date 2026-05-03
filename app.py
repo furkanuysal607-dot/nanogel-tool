@@ -5,7 +5,8 @@ import numpy as np
 st.title("Nanogel Clinical Tool")
 
 # load model directly
-model = pickle.load(open("model.pkl", "rb"))
+import joblib
+model = joblib.load("model.pkl")
 
 st.header("Patient Input")
 
