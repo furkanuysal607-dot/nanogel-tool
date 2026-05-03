@@ -1,6 +1,8 @@
 import streamlit as st
 import numpy as np
 
+st.set_page_config(layout="wide")
+
 st.title("Nanogel Clinical Tool")
 
 st.header("Patient Input")
