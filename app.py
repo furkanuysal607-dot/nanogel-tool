@@ -3,25 +3,32 @@ import numpy as np
 
 st.set_page_config(layout="wide")
 
-st.title("Nanogel Clinical Tool")
+st.title("Nanogel Clinical Decision System")
 
-st.header("Patient Input")
+col1, col2 = st.columns([1, 2])
 
-stenosis = st.slider("Stenosis (%)", 10, 80, 50)
+with col1:
+    st.header("Patient Input")
 
-if st.button("Run"):
-    # SAFE deterministic model (no loading issues)
-    phi = 0.02 + (stenosis / 100) * 0.6
-    E = 1 + (stenosis / 2)
+    patient_id = st.text_input("Patient ID")
+    stenosis = st.slider("Arterial Stenosis (%)", 10, 80, 50)
 
-    # simplified clinical mapping (replaces broken ML load)
-    output = (phi * 0.7) + (E * 0.3)
+    run = st.button("Generate Treatment Plan")
 
-    st.write("Concentration (φ):", phi)
-    st.write("Stiffness (E):", E)
-    st.write("Output score:", output)
+with col2:
+    st.header("Clinical Output")
 
-    if phi > 0.5:
-        st.error("High clogging risk")
-    else:
-        st.success("Low clogging risk")
+    if run:
+        phi = 0.02 + (stenosis / 100) * 0.6
+        E = 1 + (stenosis / 2)
+
+        output = (phi * 0.7) + (E * 0.3)
+
+        st.metric("Nanogel Concentration (φ)", round(phi, 3))
+        st.metric("Tissue Stiffness (E)", round(E, 2))
+        st.metric("Risk Score", round(output, 3))
+
+        if phi > 0.5:
+            st.error("HIGH RISK: Possible clogging")
+        else:
+            st.success("LOW RISK")
