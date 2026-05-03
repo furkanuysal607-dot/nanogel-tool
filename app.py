@@ -1,27 +1,29 @@
 import streamlit as st
 import numpy as np
 import pickle
-import gdown
 import os
 
 st.title("Nanogel Clinical Tool")
 
-MODEL_ID = "1sg67k74pKDllq1rsDlV3HQ-KNiQai4U4"
+st.write("Upload your model file if it is not loaded.")
 
-if not os.path.exists("model.pkl"):
-    url = f"https://drive.google.com/uc?id={MODEL_ID}"
-    gdown.download(url, "model.pkl", quiet=False)
+model = None
 
-model = pickle.load(open("model.pkl", "rb"))
+uploaded = st.file_uploader("Upload model.pkl", type=["pkl"])
 
-st.header("Patient Input")
+if uploaded is not None:
+    model = pickle.load(uploaded)
 
-phi = st.slider("Nanogel concentration (φ)", 0.02, 0.64, 0.3)
-E = st.slider("Stiffness (E)", 0.5, 50.0, 10.0)
-stenosis = st.slider("Stenosis (%)", 10, 80, 50)
+if model is not None:
+    st.success("Model loaded")
 
-if st.button("Predict"):
-    result = model.predict([[phi, E, stenosis]])[0]
+    phi = st.slider("Nanogel concentration (φ)", 0.02, 0.64, 0.3)
+    E = st.slider("Stiffness (E)", 0.5, 50.0, 10.0)
+    stenosis = st.slider("Stenosis (%)", 10, 80, 50)
 
-    st.subheader("Result")
-    st.write("Output:", result)
+    if st.button("Predict"):
+        result = model.predict([[phi, E, stenosis]])[0]
+        st.subheader("Result")
+        st.write(result)
+else:
+    st.warning("Upload model.pkl to continue")
