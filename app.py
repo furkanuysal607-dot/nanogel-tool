@@ -3,133 +3,74 @@ import numpy as np
 
 st.set_page_config(layout="wide")
 
-# MODE SWITCH
-mode = st.sidebar.radio("UI Mode", ["Clinical (Light)", "Hospital (Dark)"])
+st.markdown("""
+<style>
+.main {
+    background-color: #0b0f19;
+    color: white;
+}
+.block-container {
+    padding-top: 2rem;
+}
+div[data-testid="stMetric"] {
+    background-color: #111827;
+    border-radius: 10px;
+    padding: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# ----------------------------
-# LIGHT MODE (YOUR CURRENT)
-# ----------------------------
-def light_mode():
-    st.title("Nanogel Clinical Decision System")
+st.title("🏥 Nanogel Clinical Decision System")
 
-    st.markdown("""
-    ---
-    Clinical Mode: Active | Research Mode: Enabled | Nanogel v1.0
-    ---
-    """)
+st.markdown("### System Status: 🟢 Stable | Simulation Mode | Active Monitoring")
 
-    col1, col2 = st.columns([1, 2])
+col1, col2, col3 = st.columns([1, 2, 1])
 
-    with col1:
-        st.header("Patient Panel")
+with col1:
+    st.subheader("Patient Record")
 
-        patient_id = st.text_input("Patient ID")
-        stenosis = st.slider("Arterial Stenosis (%)", 10, 80, 50)
+    patient_id = st.text_input("Patient ID")
+    age = st.number_input("Age", 20, 100, 60)
+    stenosis = st.slider("Arterial Stenosis (%)", 10, 80, 50)
 
-        run = st.button("Run Analysis")
+    run = st.button("Run Clinical Scan")
 
-    with col2:
-        st.header("Clinical + Research Output")
+with col2:
+    st.subheader("Clinical Decision Output")
 
-        if run:
-            phi = 0.02 + (stenosis / 100) * 0.6
-            E = 1 + (stenosis / 2)
-            score = (phi * 0.7) + (E * 0.3)
+    if run:
+        phi = 0.02 + (stenosis / 100) * 0.6
+        E = 1 + (stenosis / 2)
+        score = (phi * 0.7) + (E * 0.3)
 
-            st.subheader("Clinical Metrics")
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Nanogel φ", round(phi, 3))
+        c2.metric("Stiffness E", round(E, 2))
+        c3.metric("Risk Index", round(score, 3))
 
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Nanogel φ", round(phi, 3))
-            c2.metric("Stiffness E", round(E, 2))
-            c3.metric("Risk Score", round(score, 3))
+        if score > 10:
+            st.error("CRITICAL VASCULAR RISK")
+        else:
+            st.success("Stable condition")
 
-            if phi > 0.5:
-                st.error("High clogging risk detected")
-            else:
-                st.success("Safe range")
+        st.subheader("Dose-Response Curve")
 
-            st.subheader("Dose-Response Curve")
+        s_vals = np.linspace(10, 80, 20)
+        scores = []
 
-            s_vals = np.linspace(10, 80, 20)
-            phi_vals = []
-            score_vals = []
+        for s in s_vals:
+            p = 0.02 + (s / 100) * 0.6
+            e = 1 + (s / 2)
+            scores.append((p * 0.7) + (e * 0.3))
 
-            for s in s_vals:
-                p = 0.02 + (s / 100) * 0.6
-                e = 1 + (s / 2)
-                sc = (p * 0.7) + (e * 0.3)
+        st.line_chart(scores)
 
-                phi_vals.append(p)
-                score_vals.append(sc)
+with col3:
+    st.subheader("Live Monitor")
 
-            st.line_chart({
-                "Stenosis vs φ": phi_vals,
-                "Stenosis vs Score": score_vals
-            })
+    st.info("Blood Flow: Simulated")
+    st.info("Nanogel Delivery: Active")
+    st.info("System Load: Normal")
 
-
-# ----------------------------
-# DARK MODE (HOSPITAL UI)
-# ----------------------------
-def dark_mode():
-    st.markdown("""
-    <style>
-    .main {
-        background-color: #0e1117;
-        color: white;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    st.title("🏥 Hospital Nanogel Clinical System")
-
-    st.markdown("**Real-Time Vascular Treatment Dashboard**")
-
-    col1, col2 = st.columns([1, 2])
-
-    with col1:
-        st.header("Patient Intake")
-
-        patient_id = st.text_input("Patient ID")
-        stenosis = st.slider("Arterial Stenosis (%)", 10, 80, 50)
-
-        run = st.button("Run Diagnostic")
-
-    with col2:
-        st.header("Diagnostic Output")
-
-        if run:
-            phi = 0.02 + (stenosis / 100) * 0.6
-            E = 1 + (stenosis / 2)
-            score = (phi * 0.7) + (E * 0.3)
-
-            st.metric("Nanogel Concentration (φ)", round(phi, 3))
-            st.metric("Tissue Stiffness (E)", round(E, 2))
-            st.metric("Risk Index", round(score, 3))
-
-            if phi > 0.5:
-                st.error("CRITICAL: High clogging probability")
-            else:
-                st.success("Stable vascular condition")
-
-            st.subheader("Physiological Response Curve")
-
-            s_vals = np.linspace(10, 80, 20)
-            scores = []
-
-            for s in s_vals:
-                p = 0.02 + (s / 100) * 0.6
-                e = 1 + (s / 2)
-                sc = (p * 0.7) + (e * 0.3)
-                scores.append(sc)
-
-            st.line_chart(scores)
-
-
-# ----------------------------
-# RUN MODE
-# ----------------------------
-if mode == "Clinical (Light)":
-    light_mode()
-else:
-    dark_mode()
+    st.markdown("---")
+    st.caption("Clinical AI v2.0 | Research Mode Enabled")
