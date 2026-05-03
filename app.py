@@ -8,27 +8,28 @@ st.title("Nanogel Clinical Decision System")
 col1, col2 = st.columns([1, 2])
 
 with col1:
-    st.header("Patient Input")
+    st.header("Patient Panel")
 
     patient_id = st.text_input("Patient ID")
     stenosis = st.slider("Arterial Stenosis (%)", 10, 80, 50)
 
-    run = st.button("Generate Treatment Plan")
+    run = st.button("Run Analysis")
 
 with col2:
-    st.header("Clinical Output")
+    st.header("Clinical + Research Output")
 
     if run:
         phi = 0.02 + (stenosis / 100) * 0.6
         E = 1 + (stenosis / 2)
 
-        output = (phi * 0.7) + (E * 0.3)
+        score = (phi * 0.7) + (E * 0.3)
 
+        st.subheader("Clinical Metrics")
         st.metric("Nanogel Concentration (φ)", round(phi, 3))
         st.metric("Tissue Stiffness (E)", round(E, 2))
-        st.metric("Risk Score", round(output, 3))
+        st.metric("Risk Score", round(score, 3))
 
         if phi > 0.5:
-            st.error("HIGH RISK: Possible clogging")
+            st.error("HIGH CLOGGING RISK")
         else:
-            st.success("LOW RISK")
+            st.success("LOW CLOGGING RISK")
