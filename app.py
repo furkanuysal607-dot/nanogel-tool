@@ -1,29 +1,40 @@
 import streamlit as st
-import numpy as np
 import pickle
-import os
+import numpy as np
 
-st.title("Nanogel Clinical Tool")
+st.set_page_config(page_title="Nanogel Clinical Tool", layout="wide")
 
-st.write("Upload your model file if it is not loaded.")
+st.title("Nanogel Clinical Decision System")
+st.caption("Doctor input → nanogel treatment prediction")
 
-model = None
+# LOAD MODEL (NOW LOCAL FILE)
+model = pickle.load(open("model.pkl", "rb"))
 
-uploaded = st.file_uploader("Upload model.pkl", type=["pkl"])
+col1, col2 = st.columns(2)
 
-if uploaded is not None:
-    model = pickle.load(uploaded)
+with col1:
+    st.header("Patient Input")
 
-if model is not None:
-    st.success("Model loaded")
+    patient_id = st.text_input("Patient ID")
+    stenosis = st.slider("Arterial Stenosis (%)", 10, 80, 50)
 
-    phi = st.slider("Nanogel concentration (φ)", 0.02, 0.64, 0.3)
-    E = st.slider("Stiffness (E)", 0.5, 50.0, 10.0)
-    stenosis = st.slider("Stenosis (%)", 10, 80, 50)
+    run = st.button("Generate Plan")
 
-    if st.button("Predict"):
-        result = model.predict([[phi, E, stenosis]])[0]
-        st.subheader("Result")
-        st.write(result)
-else:
-    st.warning("Upload model.pkl to continue")
+with col2:
+    st.header("Results")
+
+    if run:
+        phi = 0.02 + (stenosis / 100) * 0.6
+        E = 1 + (stenosis / 2)
+
+        output = model.predict([[phi, E, stenosis]])[0]
+
+        st.subheader("Recommended Parameters")
+        st.write("Concentration (φ):", round(phi, 3))
+        st.write("Stiffness (E):", round(E, 2))
+        st.write("Model Output:", output)
+
+        if phi > 0.5:
+            st.error("High clogging risk")
+        else:
+            st.success("Low clogging risk")
