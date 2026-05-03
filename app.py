@@ -10,7 +10,8 @@ st.caption("Doctor input → nanogel treatment prediction")
 # LOAD MODEL (NOW LOCAL FILE)
 import os
 st.write("Files in folder:", os.listdir())
-model = pickle.load(open("model.pkl", "rb"))
+import joblib
+model = joblib.load("model.pkl")
 
 col1, col2 = st.columns(2)
 
