@@ -1,6 +1,7 @@
 streamlit
 numpy
-scikit-learn
 matplotlib
 reportlab
 gdown
+joblib
+scikit-learn
