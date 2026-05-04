@@ -56,7 +56,7 @@ st.title("Nanogel Clinical Decision System")
 st.markdown("Clinical + Research Simulation Tool")
 
 # -------------------------
-# METHODS (ISEF SECTION)
+# METHODS
 # -------------------------
 st.subheader("Methods & Model Assumptions")
 
