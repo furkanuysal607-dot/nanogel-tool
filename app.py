@@ -2,7 +2,55 @@ import streamlit as st
 import numpy as np
 
 st.set_page_config(layout="wide")
+st.markdown("""
+<style>
+/* App background */
+.main {
+    background-color: #F8FAFC;
+    color: #000000;
+}
 
+/* Main title */
+h1 {
+    color: #1D4ED8;
+    font-weight: 700;
+}
+
+/* Section titles */
+h2, h3 {
+    color: #0F172A;
+}
+
+/* Text */
+p, div {
+    color: #000000;
+}
+
+/* Metric boxes */
+div[data-testid="stMetric"] {
+    background-color: #E2E8F0;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #F1F5F9;
+}
+
+/* Button styling */
+.stButton > button {
+    background-color: #1D4ED8;
+    color: white;
+    border-radius: 8px;
+    border: none;
+}
+
+.stButton > button:hover {
+    background-color: #1E40AF;
+}
+</style>
+""", unsafe_allow_html=True)
 st.title("Nanogel Clinical Decision System")
 
 st.markdown("Clinical + Research Simulation Tool")
